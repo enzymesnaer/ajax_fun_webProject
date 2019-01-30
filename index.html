@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script>
+
+        $(document).ready(function() {
+
+        
+        setInterval(function(){
+
+                updateCars();
+
+            },1000);
+
+
+        function updateCars(){
+
+        $.ajax({
+
+        url: 'display_cars.php',
+        type: 'POST',
+        success: function(show_cars) {
+
+            if (!show_cars.error) {
+            $("#show-cars").html(show_cars);
+            }
+        }
+
+        });
+
+        }
+
+
+        $('#search').keyup(function() {
+
+        var search = $('#search').val();
+
+        $.ajax({
+
+            url: 'search.php',
+            data: {
+            search: search
+            },
+            type: 'POST',
+            success: function(data) {
+            if (!data.error) {
+                $('#result').html(data);
+            }
+            }
+        });
+
+        });
+
+
+        }); // Document ready function end
+
+            //this code adds cars to database table cars
+
+            $("#add-car-form").submit(function() {
+
+        
+            var postData = $(this).serialize();
+            var url = $(this).attr('action');
+            $.post(url, postData, function(php_table_data) {
+    
+            $("#car-result").html(php_table_data);
+
+            //$("#add-car-form")[0].reset();
+            document.getElementById('add-car-form').reset();
+            //$('#add-car-form').val('');
+            //$('form.add-car-form input[type="text"],texatrea, select').val('');
+
+            });
+
+            }); // add car fuction ends
+
+    </script>
+
+
+    <div class="col-xs-6 col-xs-offset-3  mx-sm-5 " id="container">
+
+      <br>
+      <div class="row">
+        <h2><b>Search Our Database</b></h2>
+        <input type="text" class="form-control text-center" name="search" id="search" placeholder="Search Our Inventory">
+        <br><br>
+        <h2 class="bg-success" id="result"></h2>
+
+      </div><br><br><br>
+     
+     
+      <div class="row">
+        <form method="post" class="col-xs-5" id="add-car-form" action="add_cars.php">
+          <div class="form-group">
+            <label for="name">Add a Car</label>
+            <input type="text" class="form-control" name="car_name" required>
+          </div>
+
+          <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="add car">
+          </div>
+        </form>
+        <div class="col-xs-6">
+          <div id="car-result">
+
+          </div>
+        </div>
+      </div>
+
+     
+      <div class="row">
+        <div class="col-xs-6">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody id="show-cars">
+
+
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+
+    </div>
+
+  </body>
+
+</html>
